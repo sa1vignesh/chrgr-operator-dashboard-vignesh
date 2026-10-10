@@ -2,7 +2,7 @@
 
 Independent, driver-verified reliability for EV charging operators in India. Operators self-report charger status today; Chrgr compares that claim with what drivers actually experienced and turns the gap into SLAs, tickets and alerts.
 
-**Live demo:** _<paste Render URL>_  ·  **Stack:** React (Vite) + Tailwind CSS + Recharts · Node.js/Express · in-memory store
+**Live demo:** https://chrgr-operator-dashboard-vignesh.onrender.com _(free tier — the first load after idle can take ~30–60 s)_  ·  **Stack:** React (Vite) + Tailwind CSS + Recharts · Node.js/Express · in-memory store
 
 ## Run locally
 ```bash
@@ -31,8 +31,50 @@ Check-ins are the **single source of truth**. `server/seed.js` generates 30 days
 
 Other notes: data is mock; timestamps are shifted at server start so the dataset always ends "now". State (tickets, alerts, targets) is in memory and resets on restart. Days with very few check-ins can be noisy.
 
-## Screens (screenshots in `/screenshots`)
-1. Onboarding — register network · 2. Onboarding — chargers discovered · 3. Dashboard · 4. Charger detail (divergent charger, e.g. CHG-HYD-007) · 5. Charger detail (outage, e.g. CHG-HYD-009) · 6. SLA tracking · 7. Maintenance tickets · 8. Notification centre
+## Screens
+
+### 1. Operator onboarding
+New operators register their network (name, contact email, primary city).
+
+![Operator onboarding](screenshots/01-onboarding.png)
+
+After registering, the network's chargers are discovered and pre-populated, listed with their current driver-verified reliability.
+
+![Chargers discovered](screenshots/02-onboarding-discovered.png)
+
+### 2. Operator dashboard
+Five summary cards (total chargers, driver-verified reliability, critical count, suspected outages, last updated) and a sortable, filterable table of all 20 chargers. A red flag marks chargers where claimed vs verified uptime differs by more than 20 points.
+
+![Operator dashboard](screenshots/03-dashboard.png)
+
+### 3. Charger detail — divergence flag
+Operator-claimed vs driver-verified status with the red divergence flag, month-to-date SLA position with an editable target, a heuristic 6-hour reliability prediction, the 7-day trend against the SLA target and claimed uptime, and a donut of top failure reasons.
+
+![Charger detail with divergence flag](screenshots/04-charger-detail-divergence.png)
+
+The last 20 driver check-ins as a timeline, with the charger's linked maintenance ticket.
+
+![Last 20 check-ins and tickets](screenshots/04b-charger-detail-checkins.png)
+
+### 4. Charger detail — suspected outage
+A charger that still claims to be online but whose last two driver check-ins failed with no activity since. The prediction is capped at a low value while an outage is suspected.
+
+![Charger detail with suspected outage](screenshots/05-charger-detail-outage.png)
+
+### 5. SLA tracking
+Per-charger reliability targets (default 80%, editable), month-to-date actual, progress to target, days in breach, worst day, and a downloadable CSV report.
+
+![SLA tracking](screenshots/06-sla-tracking.png)
+
+### 6. Maintenance tickets
+Tickets are auto-created when reliability falls below 50% or the divergence flag fires. Operators assign technicians, change status and add notes.
+
+![Maintenance tickets](screenshots/07-maintenance-tickets.png)
+
+### 7. Notification centre
+Configurable alerts for reliability drops, suspected outages and divergence, with read/unread state.
+
+![Notification centre](screenshots/08-notification-centre.png)
 
 ## API
 `GET /api/summary` · `/chargers` · `/chargers/:id` · `PUT /chargers/:id/sla-target` · `GET /sla` · `/sla/report.csv` · `GET/PATCH /tickets` · `POST /tickets/:id/notes` · `GET /alerts` · `PUT /alert-config` · `POST /onboarding`
