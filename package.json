@@ -1,0 +1,14 @@
+{
+  "name": "chrgr-operator-dashboard-vignesh",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "seed": "node server/seed.js",
+    "start": "node server/index.js",
+    "build": "cd client && npm install && npm run build",
+    "dev:server": "node server/index.js",
+    "dev:client": "cd client && npm run dev"
+  },
+  "dependencies": { "express": "^4.19.2" },
+  "engines": { "node": ">=18" }
+}
